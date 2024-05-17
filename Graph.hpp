@@ -3,7 +3,7 @@
 //mail:guyguy845@gmail.com
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
-
+#include <iostream>
 #include <vector>
 #include <utility>
 using namespace std;
@@ -51,7 +51,17 @@ namespace ariel {
         Graph& operator--(); // הקטנה ב-1 (לפני)
         Graph operator--(int); // הקטנה ב-1 (אחרי)
         Graph operator*(int scalar) const; // הכפלה בסקלר
+        Graph& operator*=(int scalar); // הכפלה בסקלר
+        Graph operator/(int scalar) const; // חלוקה בסקלר
+        Graph& operator/=(int scalar); // חלוקה בסקלר
+
         Graph operator*(const Graph& other) const; // הכפלת גרפים
+        Graph& operator*=(const Graph& other); // הכפלת גרפים
+        friend std::ostream& operator<<(std::ostream& os, const Graph& graph);
+        friend std::istream& operator>>(std::istream& is, Graph& graph);
+        friend Graph operator*(int scalar, const Graph& graph);
+        friend Graph operator/(int scalar, const Graph& graph);
+
     };
     using StartNode = size_t;
     using EndNode = size_t;

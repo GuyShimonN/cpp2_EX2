@@ -164,32 +164,7 @@ Graph& Graph::operator-=(const Graph& other) {
 
     return *this;
 }
-Graph Graph::operator-() const {
-    Graph result;
-    result.adjacencyMatrix = this->adjacencyMatrix; // Copy the adjacency matrix
 
-    // Iterate over the adjacency matrix and multiply each edge by -1
-    for(auto& row : result.adjacencyMatrix) {
-        for(auto& edge : row) {
-            edge *= -1;
-        }
-    }
-
-    return result;
-}
-Graph Graph::operator*(int scalar) const {
-    Graph result;
-    result.adjacencyMatrix = this->adjacencyMatrix; // Copy the adjacency matrix
-
-    // Iterate over the adjacency matrix and multiply each edge by the scalar
-    for(auto& row : result.adjacencyMatrix) {
-        for(auto& edge : row) {
-            edge *= scalar;
-        }
-    }
-
-    return result;
-}
 Graph Graph::operator*(const Graph& other) const {
     // Check if the two graphs have the same number of nodes
     if (this->adjacencyMatrix.size() != other.adjacencyMatrix.size()) {
@@ -212,32 +187,55 @@ Graph Graph::operator*(const Graph& other) const {
     return result;
 }
 bool Graph::operator>(const Graph& other) const {
-    // Check if this graph is contained within the other graph
-    for (const auto& row : this->adjacencyMatrix) {
-        if (std::find(other.adjacencyMatrix.begin(), other.adjacencyMatrix.end(), row) == other.adjacencyMatrix.end()) {
-            return true;
+    // Check if the graphs are of the same size
+    if (this->getNumberOfNodes() != other.getNumberOfNodes()) {
+        return false;
+    }
+
+    bool isProperSubset = false;
+    bool isOtherProperSubset = false;
+    int thisEdgeCount = 0, otherEdgeCount = 0;
+    int thisTotalWeight = 0, otherTotalWeight = 0;
+
+    for (size_t i = 0; i < this->adjacencyMatrix.size(); ++i) {
+        for (size_t j = 0; j < this->adjacencyMatrix[i].size(); ++j) {
+            int thisWeight = this->adjacencyMatrix[i][j];
+            int otherWeight = other.adjacencyMatrix[i][j];
+
+            thisEdgeCount += (thisWeight != 0);
+            otherEdgeCount += (otherWeight != 0);
+
+            thisTotalWeight += thisWeight;
+            otherTotalWeight += otherWeight;
+
+            if (thisWeight > otherWeight) {
+                isOtherProperSubset = true;
+            }
+            if (thisWeight < otherWeight) {
+                isProperSubset = true;
+            }
         }
     }
 
-    // Compare the number of edges
-    int thisEdges = 0;
-    int otherEdges = 0;
-    for (const auto& row : this->adjacencyMatrix) {
-        thisEdges += std::count_if(row.begin(), row.end(), [](int i){ return i != 0; });
-    }
-    for (const auto& row : other.adjacencyMatrix) {
-        otherEdges += std::count_if(row.begin(), row.end(), [](int i){ return i != 0; });
-    }
-    if (thisEdges < otherEdges) {
+    // Check if this graph is a proper subset of the other graph
+    if (isProperSubset && !isOtherProperSubset) {
         return false;
     }
 
-    // Compare the size of the adjacency matrices
-    if (this->adjacencyMatrix.size() < other.adjacencyMatrix.size()) {
+    // Check if the other graph is a proper subset of this graph
+    if (isOtherProperSubset && !isProperSubset) {
+        return true;
+    }
+
+    // If neither graph is a proper subset of the other, compare edge counts
+    if (otherEdgeCount > thisEdgeCount) {
+        return true;
+    } else if (otherEdgeCount < thisEdgeCount) {
         return false;
     }
 
-    return true;
+    // If edge counts are equal, compare the total weight of edges
+    return otherTotalWeight > thisTotalWeight;
 }
 
 bool Graph::operator==(const Graph& other) const {
@@ -250,7 +248,7 @@ bool Graph::operator==(const Graph& other) const {
     for (size_t i = 0; i < this->adjacencyMatrix.size(); ++i) {
         for (size_t j = 0; j < this->adjacencyMatrix[i].size(); ++j) {
             if (this->adjacencyMatrix[i][j] != other.adjacencyMatrix[i][j]) {
-                return false;
+                return !(*this > other) && !(other > *this);
             }
         }
     }
@@ -277,6 +275,170 @@ bool Graph::operator>=(const Graph& other) const {
 bool Graph::operator<=(const Graph& other) const {
     return (!(*this > other)||(*this == other));
 }
+Graph& Graph::operator--() {
+    // Decrement each edge by 1
+    for (auto& row : this->adjacencyMatrix) {
+        for (auto& edge : row) {
+            edge -= 1;
+        }
+    }
+
+    return *this;
+}
+Graph Graph::operator*(int scalar) const {
+    // Create a copy of the current state of the graph
+    Graph result = *this;
+
+    // Multiply each edge by the scalar
+    for (auto& row : result.adjacencyMatrix) {
+        for (auto& edge : row) {
+            edge *= scalar;
+        }
+    }
+
+    // Return the resulting graph
+    return result;
+}
+
+Graph Graph::operator-() const {
+    Graph result = *this;
+    return result * -1;
+}
+
+Graph Graph::operator+() const {
+    Graph result = *this;
+    return result;
+}
+Graph& Graph::operator*=(int scalar) {
+    // Multiply each edge by the scalar
+    for (auto& row : this->adjacencyMatrix) {
+        for (auto& edge : row) {
+            edge *= scalar;
+        }
+    }
+
+    // Return the graph
+    return *this;
+}
+Graph Graph::operator/(int scalar) const {
+    if (scalar == 0) {
+        throw std::invalid_argument("Division by zero is not allowed.");
+    }
+
+    // Create a copy of the current state of the graph
+    Graph result = *this;
+
+    // Divide each edge by the scalar
+    for (auto& row : result.adjacencyMatrix) {
+        for (auto& edge : row) {
+            edge /= scalar;
+        }
+    }
+
+    // Return the resulting graph
+    return result;
+}
+Graph& Graph::operator/=(int scalar) {
+    if (scalar == 0) {
+        throw std::invalid_argument("Division by zero is not allowed.");
+    }
+
+    // Divide each edge by the scalar
+    for (auto& row : this->adjacencyMatrix) {
+        for (auto& edge : row) {
+            edge /= scalar;
+        }
+    }
+
+    // Return the graph
+    return *this;
+}
+Graph& Graph::operator*=(const Graph& other) {
+    // Check if the two graphs have the same number of nodes
+    if (this->adjacencyMatrix.size() != other.adjacencyMatrix.size()) {
+        throw std::invalid_argument("The two graphs must have the same number of nodes to perform multiplication.");
+    }
+
+    size_t n = this->adjacencyMatrix.size();
+    std::vector<std::vector<int>> resultMatrix(n, std::vector<int>(n, 0)); // Initialize the result adjacency matrix with zeros
+
+    // Perform matrix multiplication
+    for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+            for (size_t k = 0; k < n; ++k) {
+                resultMatrix[i][j] += this->adjacencyMatrix[i][k] * other.adjacencyMatrix[k][j];
+            }
+        }
+    }
+
+    // Assign the result back to the graph
+    this->adjacencyMatrix = resultMatrix;
+
+    // Return the graph
+    return *this;
+}
 
 
 
+std::ostream& operator<<(std::ostream& os, const Graph& graph) {
+    for (const auto& row : graph.getMatrix()) {
+        for (const auto& edge : row) {
+            os << edge << ' ';
+        }
+        os << '\n';
+    }
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, Graph& graph) {
+    size_t n; // The number of nodes in the graph
+    is >> n;
+
+    // Resize the adjacency matrix
+    std::vector<std::vector<int>> newMatrix(n, std::vector<int>(n));
+
+    // Input the adjacency matrix
+    for (auto& row : newMatrix) {
+        for (auto& edge : row) {
+            is >> edge;
+        }
+    }
+
+    graph.loadGraph(newMatrix);
+
+    return is;
+}
+
+Graph operator*(int scalar, const Graph& graph) {
+    // Create a copy of the graph
+    Graph result = graph;
+
+    // Multiply each edge by the scalar
+    for (auto& row : result.getMatrix()) {
+        for (auto& edge : row) {
+            edge *= scalar;
+        }
+    }
+
+    // Return the resulting graph
+    return result;
+}
+
+Graph operator/(int scalar, const Graph& graph) {
+    if (scalar == 0) {
+        throw std::invalid_argument("Division by zero is not allowed.");
+    }
+
+    // Create a copy of the graph
+    Graph result = graph;
+
+    // Divide each edge by the scalar
+    for (auto& row : result.getMatrix()) {
+        for (auto& edge : row) {
+            edge /= scalar;
+        }
+    }
+
+    // Return the resulting graph
+    return result;
+}
