@@ -1,22 +1,71 @@
-# מטלה 2 - גרפים והעמסת אופרטורים
+guy shimon:
 
-במטלה הקודמת מימשתם את המחלקה `Graph.cpp` המאפשרת ייצוג של גרפים בעזרת מטריצת שכנויות. במטלה הזאת, אתם תרחיבו את המחלקה ותוסיפו תמיכה באופרטורים חשבוניים על גרפים.
-כאמור, הגרפים מיוצגים בעזרת מטריצת שכנויות, לכן כל האופרטורים צריכים להיות חוקיים עבור מטריצות (כמו שלמדתם בקורס אלגברה לינארית).
+ID-209306513
 
-אתם תצטרכו להוסיף את האופרטורים הבאים:
+mail:guyguy845@gmail.com
 
-- שישה אופרטורים חשבוניים: חיבור (+) הוספה (+=) פלוס אונרי (+), ושלושת האופרטורים המקבילים לחיסור (-). כאמור, חיבור/חיסור של שתי מטריצות מוגדר רק על מטריצות מאותו סדר גודל nXn. ניסיון לחבר/לחסר שתי מטריצות שלא מקיימות תנאי זה יגרום לזריקת שגיאה.
-- שישה אופרטורי השוואה: גדול, גדול-או-שווה, קטן, קטן-או-שווה, שווה, לא-שווה. לשם מטלה זו כללי השוואת גרפים הם כדלקמן:
+for run the progrem you need to use g++ compiler and run the following command:
 
-    1. גרפים G1 ו-G2 ייקראו שווים אם הם מאותו סדר גודל ומכילים את אותן הצלעות (והמשקלים של הצלעות זהים) או אם G1 לא גדול מ-G2 וגם G2 לא גדול מ-G1.
-    2. גרף G2 גדול מגרף G1 אם הגרף G1 מוכל ממש בגרף G2. אם אף גרף לא מוכל ממש בשני והגרפים לא שווים, אז גרף G2 גדול מגרף G1 אם מספר הצלעות ב-G2 גדול ממספר הצלעות ב-G1. אם בכל זאת מספר הצלעות זהה, אז הגרף G2 גדול מהגרף G1 אם המטריצה המייצגת של G2 בעלת סדר גודל גבוה יותר משל G1.
+1. **Clone the Repository**: First, you need to clone the repository to your local machine. Open a terminal and run the following command:
 
-- הגדלה ב-1 (++) והקטנה ב-1 (--) לפני ואחרי המספר. פעולה זו תגדיל או תקטין ב-1 את כל המשקלים של הצלעות בגרף.
-- הכפלה בסקלר שלם (`int`) - מכפיל את המשקל של כל הצלעות.
-- הכפלת גרפים - אנחנו מגדירים את פעולת הכפל בין גרף G1 לגרף G2 על ידי מכפלה של המטריצות המייצגות של שני הגרפים. התוצאה צריכה להיות מטריצה המייצגת גרף. ניסיון לבצע כפל בין גרפים בגדלים שונים צריך לזרוק שגיאה.
-- אופרטור פלט - הדפסה הגיונית של הגרף (צורת ההפדסה היא לשיקולכם).
+```bash
+git clone https://github.com/GuyShimonN/CPP2_EX1.git
+```
 
+2. **Navigate to the Project Directory**: Change your current directory to the project directory:
 
-כמו כן, עליכם לכלול גם את הקובץ `Algorithms.cpp` מהמטלה הקודמת ולראות כיצד הפונקציות שהגדרתם בפעם הקודמת משתנות עכשיו. בנוסף לקבצים של המטלה אתם נדרשים להגיש גם קובץ README המתאר את אופן המימוש ואת החלוקה שביצעתם בקוד (סוג של מדריך משתמש).
-עליכם לכתוב בתחילת כל קובץ את מספר תעודת הזהות שלכם ואת המייל. אי עמידה בהנחיות תגרור הפחתה בציון.
-בהצלחה!
+```bash
+cd CPP2_EX1
+```
+
+3. **Build the Project**: According to the `README.md` file, you can build the project using the `make` command:
+
+```bash
+make
+```
+
+4. **Run the Tests**: If you want to run the tests, you can use the following commands:
+
+```bash
+make test
+./test
+```
+
+5. **Clean the Project**: If you want to clean the project (remove all the build files), you can use the following command:
+
+```bash
+make clean
+```
+
+6. **Run the Tidy Test**: If you want to run the tidy test, you can use the following command:
+
+```bash
+make tidy
+```
+
+7. **Run the Valgrind Test**: If you want to run the valgrind test, you can use the following command:
+
+```bash
+make valgrind
+```
+Graph Graph::operator+(const Graph &other) const: This function overloads the + operator to add two graphs together. It adds the adjacency matrices of the two graphs.  
+Graph &Graph::operator+=(const Graph &other): This function overloads the += operator to add another graph to the current graph. It adds the adjacency matrix of the other graph to the adjacency matrix of the current graph.  
+Graph Graph::operator-(const Graph &other) const: This function overloads the - operator to subtract another graph from the current graph. It subtracts the adjacency matrix of the other graph from the adjacency matrix of the current graph.  
+Graph &Graph::operator-=(const Graph &other): This function overloads the -= operator to subtract another graph from the current graph and assign the result to the current graph.  
+Graph Graph::operator*(const Graph &other) const: This function overloads the * operator to perform matrix multiplication on the adjacency matrices of two graphs.  
+bool Graph::operator>(const Graph &other) const: This function overloads the > operator to compare two graphs. It checks if the current graph is greater than the other graph.  
+bool Graph::operator==(const Graph &other) const: This function overloads the == operator to check if two graphs are equal. It checks if the adjacency matrices of the two graphs are equal.  
+bool Graph::operator!=(const Graph &other) const: This function overloads the != operator to check if two graphs are not equal.  
+Graph &Graph::operator++(): This function overloads the ++ operator to increment the weight of all edges in the graph by 1. 
+
+bool Graph::operator>=(const Graph &other) const: This function overloads the >= operator to check if the current graph is greater than or equal to the other graph.  
+bool Graph::operator<=(const Graph &other) const: This function overloads the <= operator to check if the current graph is less than or equal to the other graph.  
+Graph &Graph::operator--(): This function overloads the -- operator to decrement the weight of all edges in the graph by 1.  
+Graph Graph::operator*(int scalar) const: This function overloads the * operator to multiply the weight of all edges in the graph by a scalar.  
+Graph &Graph::operator*=(int scalar): This function overloads the *= operator to multiply the weight of all edges in the graph by a scalar and assign the result to the current graph.  
+Graph Graph::operator/(int scalar) const: This function overloads the / operator to divide the weight of all edges in the graph by a scalar.  
+Graph &Graph::operator/=(int scalar): This function overloads the /= operator to divide the weight of all edges in the graph by a scalar and assign the result to the current graph.  
+Graph &Graph::operator*=(const Graph &other): This function overloads the *= operator to perform matrix multiplication on the adjacency matrices of two graphs and assign the result to the current graph.  
+Graph Graph::operator++(int): This function overloads the ++ operator (postfix version) to increment the weight of all edges in the graph by 1 and return the graph before the increment.  
+Graph Graph::operator--(int): This function overloads the -- operator (postfix version) to decrement the weight of all edges in the graph by 1 and return the graph before the decrement.  
+bool Graph::operator<(const Graph &other) const: This function overloads the < operator to check if the current graph is less than the other graph.
